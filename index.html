@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>乘法閃卡練習</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* Light blue background */
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom checkbox style */
+        .checkbox-container input:checked + div {
+            background-color: #3b82f6; /* bg-blue-500 */
+            color: white;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div id="app-container" class="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8 min-h-[450px] flex flex-col relative overflow-hidden border border-blue-100">
+        
+        <!-- Setup Screen -->
+        <div id="screen-setup" class="flex-1 flex flex-col fade-in">
+            <div class="text-center mb-6">
+                <h1 class="text-3xl font-black text-gray-800">乘法閃卡練習</h1>
+                <p class="text-gray-500 font-medium mt-2">選擇想練習的被乘數 (可多選)</p>
+            </div>
+
+            <div class="flex-1 flex flex-col justify-center space-y-6">
+                <!-- Multiplicand Selection -->
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <label class="text-gray-700 font-bold text-lg">被乘數選擇：</label>
+                        <button id="btn-select-all" class="text-sm font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-1 rounded-full transition-colors">
+                            全選 (2-9混合)
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-4 gap-3">
+                        <!-- Generate checkboxes 2-9 -->
+                        <label class="checkbox-container cursor-pointer block">
+                            <input type="checkbox" name="multiplicand" value="2" class="hidden">
+                            <div class="w-full text-center py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-xl hover:border-blue-300 transition-all">2</div>
+                        </label>
+                        <label class="checkbox-container cursor-pointer block">
+                            <input type="checkbox" name="multiplicand" value="3" class="hidden">
+                            <div class="w-full text-center py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-xl hover:border-blue-300 transition-all">3</div>
+                        </label>
+                        <label class="checkbox-container cursor-pointer block">
+                            <input type="checkbox" name="multiplicand" value="4" class="hidden">
+                            <div class="w-full text-center py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-xl hover:border-blue-300 transition-all">4</div>
+                        </label>
+                        <label class="checkbox-container cursor-pointer block">
+                            <input type="checkbox" name="multiplicand" value="5" class="hidden">
+                            <div class="w-full text-center py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-xl hover:border-blue-300 transition-all">5</div>
+                        </label>
+                        <label class="checkbox-container cursor-pointer block">
+                            <input type="checkbox" name="multiplicand" value="6" class="hidden">
+                            <div class="w-full text-center py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-xl hover:border-blue-300 transition-all">6</div>
+                        </label>
+                        <label class="checkbox-container cursor-pointer block">
+                            <input type="checkbox" name="multiplicand" value="7" class="hidden">
+                            <div class="w-full text-center py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-xl hover:border-blue-300 transition-all">7</div>
+                        </label>
+                        <label class="checkbox-container cursor-pointer block">
+                            <input type="checkbox" name="multiplicand" value="8" class="hidden">
+                            <div class="w-full text-center py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-xl hover:border-blue-300 transition-all">8</div>
+                        </label>
+                        <label class="checkbox-container cursor-pointer block">
+                            <input type="checkbox" name="multiplicand" value="9" class="hidden">
+                            <div class="w-full text-center py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-xl hover:border-blue-300 transition-all">9</div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Timer Setup -->
+                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl">
+                    <label for="time-input" class="text-gray-700 font-bold text-lg">每題秒數：</label>
+                    <div class="flex items-center space-x-3">
+                        <button id="btn-decrease" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 hover:bg-gray-100 text-gray-700 font-bold text-xl flex items-center justify-center transition-colors">−</button>
+                        <input type="number" id="time-input" value="5" min="1" max="20" class="w-16 h-12 text-center text-2xl font-black bg-transparent focus:outline-none text-blue-600">
+                        <button id="btn-increase" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 hover:bg-gray-100 text-gray-700 font-bold text-xl flex items-center justify-center transition-colors">+</button>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="btn-start" class="w-full mt-6 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-xl shadow-[0_8px_0_0_#1d4ed8] hover:shadow-[0_4px_0_0_#1d4ed8] hover:translate-y-1 transition-all">
+                開始練習
+            </button>
+        </div>
+
+        <!-- Playing Screen -->
+        <div id="screen-playing" class="flex-1 flex flex-col justify-center items-center hidden">
+            <div class="absolute top-6 right-6">
+                <span id="progress-text" class="text-gray-500 font-bold bg-blue-50 px-4 py-2 rounded-full text-sm border border-blue-100">第 1 / 10 題</span>
+            </div>
+            <div id="question-display" class="text-7xl sm:text-8xl font-black text-gray-800 tracking-wider">
+                3 × 4 = 
+            </div>
+            
+            <!-- Timer Progress Bar -->
+            <div class="absolute bottom-0 left-0 w-full h-3 bg-gray-100">
+                <div id="timer-bar" class="h-full bg-blue-500 w-full"></div>
+            </div>
+        </div>
+
+        <!-- Finished Screen -->
+        <div id="screen-finished" class="flex-1 flex flex-col justify-center items-center space-y-8 hidden fade-in">
+            <h2 class="text-6xl sm:text-7xl font-black text-red-600 tracking-widest drop-shadow-sm">筆放下</h2>
+            <p class="text-gray-500 font-semibold text-lg">10 題閃卡練習結束！</p>
+            <button id="btn-show-answers" class="px-10 py-4 bg-green-500 hover:bg-green-600 text-white rounded-2xl font-black text-xl shadow-[0_8px_0_0_#16a34a] hover:shadow-[0_4px_0_0_#16a34a] hover:translate-y-1 transition-all">
+                顯示答案
+            </button>
+        </div>
+
+        <!-- Answers Screen -->
+        <div id="screen-answers" class="flex-1 flex flex-col hidden fade-in h-full">
+            <h2 class="text-2xl font-black text-gray-800 mb-6 text-center pb-4 border-b-2 border-gray-100">本次練習解答</h2>
+            <div id="answers-list" class="flex-1 overflow-y-auto flex flex-col gap-4 pr-2 mb-4">
+                <!-- Answers injected here -->
+            </div>
+            <div class="mt-auto pt-4 border-t-2 border-gray-100">
+                <button id="btn-restart" class="w-full py-4 bg-gray-800 hover:bg-gray-900 text-white rounded-2xl font-black text-xl shadow-[0_8px_0_0_#000000] hover:shadow-[0_4px_0_0_#000000] hover:translate-y-1 transition-all">
+                    重新開始
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // UI Elements
+        const screens = {
+            setup: document.getElementById('screen-setup'),
+            playing: document.getElementById('screen-playing'),
+            finished: document.getElementById('screen-finished'),
+            answers: document.getElementById('screen-answers')
+        };
+        
+        const btnSelectAll = document.getElementById('btn-select-all');
+        const checkboxes = document.querySelectorAll('input[name="multiplicand"]');
+        const timeInput = document.getElementById('time-input');
+        const btnDecrease = document.getElementById('btn-decrease');
+        const btnIncrease = document.getElementById('btn-increase');
+        const btnStart = document.getElementById('btn-start');
+        
+        const questionDisplay = document.getElementById('question-display');
+        const progressText = document.getElementById('progress-text');
+        const timerBar = document.getElementById('timer-bar');
+        
+        const btnShowAnswers = document.getElementById('btn-show-answers');
+        const answersList = document.getElementById('answers-list');
+        const btnRestart = document.getElementById('btn-restart');
+
+        // State
+        const TOTAL_QUESTIONS = 10;
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let timePerQuestion = 5;
+        let timerTimeout;
+        let audioCtx;
+
+        // Audio initialization (must happen on user interaction)
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Generate synthetic beeps
+        function playBeep(duration, frequency) {
+            if (!audioCtx) return;
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+            
+            // Envelope to prevent audio clicks
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.02);
+            gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime + duration - 0.02);
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + duration);
+        }
+
+        function init() {
+            // Select All logic
+            let allSelected = false;
+            btnSelectAll.addEventListener('click', () => {
+                allSelected = !allSelected;
+                checkboxes.forEach(cb => cb.checked = allSelected);
+                btnSelectAll.textContent = allSelected ? '取消全選' : '全選 (2-9混合)';
+            });
+
+            // Time input controls
+            btnDecrease.addEventListener('click', () => {
+                let val = parseInt(timeInput.value);
+                if (val > 1) timeInput.value = val - 1;
+            });
+            btnIncrease.addEventListener('click', () => {
+                let val = parseInt(timeInput.value);
+                if (val < 20) timeInput.value = val + 1;
+            });
+            timeInput.addEventListener('change', () => {
+                let val = parseInt(timeInput.value);
+                if (isNaN(val) || val < 1) timeInput.value = 1;
+                if (val > 60) timeInput.value = 60;
+            });
+
+            // Navigation buttons
+            btnStart.addEventListener('click', startGame);
+            btnShowAnswers.addEventListener('click', showAnswersScreen);
+            btnRestart.addEventListener('click', resetGame);
+            
+            // Check default state for select all text
+            checkCheckboxesState();
+            checkboxes.forEach(cb => cb.addEventListener('change', checkCheckboxesState));
+        }
+
+        function checkCheckboxesState() {
+            const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+            if (checkedCount === checkboxes.length) {
+                btnSelectAll.textContent = '取消全選';
+            } else {
+                btnSelectAll.textContent = '全選 (2-9混合)';
+            }
+        }
+
+        function generateQuestions(selectedMultiplicands) {
+            questions = [];
+            for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+                // Randomly pick one of the checked multiplicands
+                const m1 = selectedMultiplicands[Math.floor(Math.random() * selectedMultiplicands.length)];
+                // Multiplier is always random 2-9
+                const m2 = Math.floor(Math.random() * 8) + 2; 
+                
+                questions.push({
+                    num1: m1,
+                    num2: m2,
+                    answer: m1 * m2
+                });
+            }
+        }
+
+        function switchScreen(screenName) {
+            Object.values(screens).forEach(screen => {
+                screen.classList.add('hidden');
+                screen.classList.remove('fade-in');
+            });
+            screens[screenName].classList.remove('hidden');
+            // Trigger reflow to restart animations
+            void screens[screenName].offsetWidth; 
+            screens[screenName].classList.add('fade-in');
+        }
+
+        function startGame() {
+            const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked).map(cb => parseInt(cb.value));
+            
+            if (checkedBoxes.length === 0) {
+                alert("請至少選擇一個被乘數！");
+                return;
+            }
+
+            initAudio(); // Crucial: must be called on user interaction
+            
+            timePerQuestion = parseInt(timeInput.value) || 5;
+            currentQuestionIndex = 0;
+            generateQuestions(checkedBoxes);
+            
+            switchScreen('playing');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestionIndex];
+            questionDisplay.textContent = `${q.num1} × ${q.num2} =`;
+            progressText.textContent = `第 ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS} 題`;
+            
+            // Re-trigger text fade-in
+            questionDisplay.classList.remove('fade-in');
+            void questionDisplay.offsetWidth;
+            questionDisplay.classList.add('fade-in');
+
+            startTimer();
+        }
+
+        function startTimer() {
+            clearTimeout(timerTimeout);
+            
+            const durationMs = timePerQuestion * 1000;
+            
+            // Reset bar
+            timerBar.style.width = '100%';
+            timerBar.style.transition = 'none'; 
+            void timerBar.offsetWidth; // Force reflow
+            
+            // Start bar animation
+            timerBar.style.transition = `width ${timePerQuestion}s linear`;
+            timerBar.style.width = '0%';
+
+            timerTimeout = setTimeout(() => {
+                nextQuestion();
+            }, durationMs);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) {
+                // Short beep for next question (880Hz, 0.15s)
+                playBeep(0.15, 880); 
+                showQuestion();
+            } else {
+                // Long beep for end of practice (600Hz, 1.0s)
+                playBeep(1.0, 600); 
+                finishGame();
+            }
+        }
+
+        function finishGame() {
+            clearTimeout(timerTimeout);
+            switchScreen('finished');
+        }
+
+        function showAnswersScreen() {
+            answersList.innerHTML = '';
+            
+            questions.forEach((q, index) => {
+                const item = document.createElement('div');
+                item.className = 'bg-blue-50 py-4 px-6 rounded-2xl flex justify-center items-center font-bold text-3xl text-gray-800 tracking-widest border border-blue-100 shadow-sm';
+                
+                item.innerHTML = `
+                    <span class="text-blue-300 mr-4 text-xl shrink-0">(${index + 1})</span>
+                    <div class="flex-1 text-center">
+                        ${q.num1} × ${q.num2} = <span class="text-blue-600 ml-2">${q.answer}</span>
+                    </div>
+                `;
+                answersList.appendChild(item);
+            });
+            
+            switchScreen('answers');
+        }
+
+        function resetGame() {
+            switchScreen('setup');
+            // Reset timer bar manually just in case
+            timerBar.style.transition = 'none';
+            timerBar.style.width = '100%';
+        }
+
+        // Initialize events on load
+        window.onload = init;
+    </script>
+</body>
+</html>
